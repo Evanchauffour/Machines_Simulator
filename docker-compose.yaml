@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  simulateur_convoyeur:
+    build:
+      context: .
+      dockerfile: ./machine-simulator/dockerfile
+    image: machine-simulator
+    environment:
+      MACHINE_ID: convoyeur-1
+      MACHINE_TYPE: convoyeur
+      BACKEND_URL: http://localhost:3000
+
+  simulateur_presse:
+    image: machine-simulator
+    environment:
+      MACHINE_ID: presse-1
+      MACHINE_TYPE: presse
+      BACKEND_URL: http://localhost:3000
