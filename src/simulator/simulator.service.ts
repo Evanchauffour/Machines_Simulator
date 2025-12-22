@@ -1,32 +1,59 @@
 import { Injectable } from '@nestjs/common';
-import * as io from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import { Convoyeur } from './types/convoyeur';
-import { Presse } from './types/press';
+import { PresseHydraulique } from './types/press';
+import { Imprimante3D } from './types/imprimante3d';
+import { CompresseurFrigorifique } from './types/compresseur-frigorifique';
 
 @Injectable()
 export class SimulatorService {
-  private socket;
-  private machineId = process.env.MACHINE_ID || 'machine-default';
-  private machineType = process.env.MACHINE_TYPE || 'convoyeur';
-  private instance;
+  private readonly socket: Socket;
+  private readonly machineId = process.env.MACHINE_ID || 'machine-default';
+  private readonly machineType = process.env.MACHINE_TYPE || 'convoyeur';
+  private instance:
+    | Convoyeur
+    | PresseHydraulique
+    | Imprimante3D
+    | CompresseurFrigorifique;
 
   constructor() {
-    this.socket = io.connect(process.env.BACKEND_URL);
+    this.socket = io(process.env.BACKEND_URL || '', {
+      auth: {
+        machineId: this.machineId,
+        machineType: this.machineType,
+      },
+    });
   }
 
   start() {
     this.socket.on('connect', () => {
-      console.log(`Connected as ${this.machineId}`);
+      console.log(`Connected as ${this.machineId} (type: ${this.machineType})`);
 
       switch (this.machineType) {
         case 'convoyeur':
+        case 'convoyeur-bande':
           this.instance = new Convoyeur(this.machineId, this.socket);
           break;
         case 'presse':
-          this.instance = new Presse(this.machineId, this.socket);
+        case 'presse-hydraulique':
+          this.instance = new PresseHydraulique(this.machineId, this.socket);
+          break;
+        case 'imprimante3d':
+        case 'imprimante-3d':
+          this.instance = new Imprimante3D(this.machineId, this.socket);
+          break;
+        case 'compresseur':
+        case 'compresseur-frigorifique':
+          this.instance = new CompresseurFrigorifique(
+            this.machineId,
+            this.socket,
+          );
           break;
         default:
           console.error(`Type de machine inconnu : ${this.machineType}`);
+          console.log(
+            'Types disponibles: convoyeur, presse-hydraulique, imprimante3d, compresseur-frigorifique',
+          );
           process.exit(1);
       }
 
