@@ -142,15 +142,17 @@ export class PresseHydraulique {
   }
 
   start() {
-    // Envoi des données toutes les 2 secondes
     setInterval(() => {
       const data = this.generateData();
 
-      this.socket.emit('machine:data', {
-        id: this.id,
-        type: 'presse-hydraulique',
-        timestamp: Date.now(),
-        payload: data,
+      this.socket.emit('sensor_data', {
+        machineCode: this.id,
+        status: data.statut,
+        sensors: {
+          pression: data.pression,
+          cyclesCompletes: this.cyclesCompletes,
+        },
+        timestamp: new Date().toISOString(),
       });
     }, 2000);
   }

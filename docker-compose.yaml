@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
+    network_mode: host
     environment:
       MACHINE_ID: convoyeur-1
       MACHINE_TYPE: convoyeur
@@ -13,6 +14,7 @@ services:
 
   simulateur_presse:
     image: machine-simulator
+    network_mode: host
     environment:
       MACHINE_ID: presse-1
       MACHINE_TYPE: presse

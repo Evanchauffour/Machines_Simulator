@@ -106,15 +106,18 @@ export class Convoyeur {
   }
 
   start() {
-    // Envoi des données toutes les 2 secondes (24/24h)
     setInterval(() => {
       const data = this.generateData();
 
-      this.socket.emit('machine:data', {
-        id: this.id,
-        type: 'convoyeur',
-        timestamp: Date.now(),
-        payload: data,
+      this.socket.emit('sensor_data', {
+        machineCode: this.id,
+        status: data.statut,
+        sensors: {
+          vitesse: data.vitesse,
+          poidsTotal: data.poidsTotal,
+          sens: data.sens === 'forward' ? 1 : -1,
+        },
+        timestamp: new Date().toISOString(),
       });
     }, 2000);
   }

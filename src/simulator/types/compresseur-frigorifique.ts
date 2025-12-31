@@ -120,15 +120,16 @@ export class CompresseurFrigorifique {
   }
 
   start() {
-    // Envoi des données toutes les 2 secondes (24/24h)
     setInterval(() => {
       const data = this.generateData();
 
-      this.socket.emit('machine:data', {
-        id: this.id,
-        type: 'compresseur-frigorifique',
-        timestamp: Date.now(),
-        payload: data,
+      this.socket.emit('sensor_data', {
+        machineCode: this.id,
+        status: data.statut,
+        sensors: {
+          temperature: data.temperature,
+        },
+        timestamp: new Date().toISOString(),
       });
     }, 2000);
   }
