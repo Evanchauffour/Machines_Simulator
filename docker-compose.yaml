@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       MACHINE_ID: convoyeur-1
       MACHINE_TYPE: convoyeur
@@ -16,6 +18,8 @@ services:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       MACHINE_ID: presse-1
       MACHINE_TYPE: presse
@@ -26,6 +30,8 @@ services:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       MACHINE_ID: imprimante-1
       MACHINE_TYPE: imprimante
@@ -36,6 +42,8 @@ services:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       MACHINE_ID: compresseur-1
       MACHINE_TYPE: compresseur
