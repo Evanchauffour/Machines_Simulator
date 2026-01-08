@@ -6,41 +6,37 @@ services:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
-    network_mode: host
     environment:
       MACHINE_ID: convoyeur-1
       MACHINE_TYPE: convoyeur
-      BACKEND_URL: http://localhost:3000
+      BACKEND_URL: ${BACKEND_URL:-http://host.docker.internal:3000}
 
   simulateur_presse:
     build:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
-    network_mode: host
     environment:
       MACHINE_ID: presse-1
       MACHINE_TYPE: presse
-      BACKEND_URL: http://localhost:3000
+      BACKEND_URL: ${BACKEND_URL:-http://host.docker.internal:3000}
 
   simulateur_imprimante:
     build:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
-    network_mode: host
     environment:
       MACHINE_ID: imprimante-1
       MACHINE_TYPE: imprimante
-      BACKEND_URL: http://localhost:3000
+      BACKEND_URL: ${BACKEND_URL:-http://host.docker.internal:3000}
 
   simulateur_compresseur:
     build:
       context: .
       dockerfile: ./machine-simulator/dockerfile
     image: machine-simulator
-    network_mode: host
     environment:
       MACHINE_ID: compresseur-1
       MACHINE_TYPE: compresseur
-      BACKEND_URL: http://localhost:3000
+      BACKEND_URL: ${BACKEND_URL:-http://host.docker.internal:3000}
