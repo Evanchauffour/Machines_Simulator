@@ -38,7 +38,7 @@ export class SimulatorService {
         case 'presse-hydraulique':
           this.instance = new PresseHydraulique(this.machineId, this.socket);
           break;
-        case 'imprimante3d':
+        case 'imprimante':
         case 'imprimante-3d':
           this.instance = new Imprimante3D(this.machineId, this.socket);
           break;
