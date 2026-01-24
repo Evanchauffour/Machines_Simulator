@@ -28,7 +28,7 @@ services:
     image: machine-simulator
     environment:
       MACHINE_ID: imprimante-1
-      MACHINE_TYPE: imprimante
+      MACHINE_TYPE: imprimante3d
       BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-3000}
 
   simulateur_compresseur:
