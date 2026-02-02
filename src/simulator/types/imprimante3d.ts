@@ -9,6 +9,8 @@ interface Imprimante3DData {
   tempsRestant: number; // en secondes (estimé)
   statut: MachineStatus;
   alertes: AlertType[];
+  panneSimulee: boolean;
+  manqueMatiere: boolean;
 }
 
 export class Imprimante3D {
@@ -93,6 +95,19 @@ export class Imprimante3D {
       this.statut = 'error';
       console.log(`[${this.id}] Panne simulée`);
     });
+
+    // Commande Arrêter simulation - annule les simulations sans changer le statut
+    this.socket.on(`machine:command:${this.id}:reset`, () => {
+      this.panneSimulee = false;
+      // Si la machine était en erreur (panne), on la remet en stopped
+      if (this.statut === 'error') {
+        this.statut = 'stopped';
+        this.progression = 0;
+        this.tempsDebut = null;
+        this.dureeTotale = 3600; // Reset à la valeur par défaut
+      }
+      console.log(`[${this.id}] Simulation annulée - statut: ${this.statut}`);
+    });
   }
 
   private generateData(): Imprimante3DData {
@@ -154,6 +169,8 @@ export class Imprimante3D {
       tempsRestant,
       statut: this.statut,
       alertes,
+      panneSimulee: this.panneSimulee,
+      manqueMatiere: this.manqueMatiere,
     };
   }
 
@@ -169,6 +186,8 @@ export class Imprimante3D {
           tempsPasse: data.tempsPasse,
           tempsRestant: data.tempsRestant,
           matierePremiere: this.matierePremiere,
+          panneSimulee: data.panneSimulee,
+          manqueMatiere: data.manqueMatiere,
         },
         timestamp: new Date().toISOString(),
       });

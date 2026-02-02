@@ -7,6 +7,8 @@ interface PresseHydrauliqueData {
   pression: number; // en bar
   statut: MachineStatus;
   alertes: AlertType[];
+  fuiteSimulee: boolean;
+  panneSimulee: boolean;
 }
 
 export class PresseHydraulique {
@@ -67,6 +69,17 @@ export class PresseHydraulique {
       this.panneSimulee = true;
       this.statut = 'error';
       console.log(`[${this.id}] Panne simulée`);
+    });
+
+    // Commande Arrêter simulation - annule les simulations sans changer le statut
+    this.socket.on(`machine:command:${this.id}:reset`, () => {
+      this.panneSimulee = false;
+      this.fuiteSimulee = false;
+      if (this.statut === 'error') {
+        this.statut = 'stopped';
+        this.pressionActuelle = 0;
+      }
+      console.log(`[${this.id}] Simulation annulée - statut: ${this.statut}`);
     });
   }
 
@@ -138,6 +151,8 @@ export class PresseHydraulique {
       pression: Math.round(this.pressionActuelle * 100) / 100,
       statut: this.statut,
       alertes,
+      fuiteSimulee: this.fuiteSimulee,
+      panneSimulee: this.panneSimulee,
     };
   }
 
@@ -151,6 +166,8 @@ export class PresseHydraulique {
         sensors: {
           pression: data.pression,
           cyclesCompletes: this.cyclesCompletes,
+          fuiteSimulee: data.fuiteSimulee,
+          panneSimulee: data.panneSimulee,
         },
         timestamp: new Date().toISOString(),
       });

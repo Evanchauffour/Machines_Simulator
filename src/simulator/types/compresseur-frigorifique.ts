@@ -7,6 +7,8 @@ interface CompresseurFrigorifiqueData {
   temperature: number; // en °C
   statut: MachineStatus;
   alertes: AlertType[];
+  fuiteSimulee: boolean;
+  panneSimulee: boolean;
 }
 
 export class CompresseurFrigorifique {
@@ -64,6 +66,18 @@ export class CompresseurFrigorifique {
       this.statut = 'error';
       console.log(`[${this.id}] Panne simulée`);
     });
+
+    // Commande Arrêter simulation - annule les simulations sans changer le statut
+    this.socket.on(`machine:command:${this.id}:reset`, () => {
+      this.panneSimulee = false;
+      this.fuiteSimulee = false;
+      // Si la machine était en erreur (panne), on la remet en stopped
+      // Sinon on garde le statut actuel (running continue à running)
+      if (this.statut === 'error') {
+        this.statut = 'stopped';
+      }
+      console.log(`[${this.id}] Simulation annulée - statut: ${this.statut}`);
+    });
   }
 
   private generateData(): CompresseurFrigorifiqueData {
@@ -116,6 +130,8 @@ export class CompresseurFrigorifique {
       temperature: Math.round(this.temperatureActuelle * 100) / 100,
       statut: this.statut,
       alertes,
+      fuiteSimulee: this.fuiteSimulee,
+      panneSimulee: this.panneSimulee,
     };
   }
 
@@ -128,6 +144,8 @@ export class CompresseurFrigorifique {
         status: data.statut,
         sensors: {
           temperature: data.temperature,
+          fuiteSimulee: data.fuiteSimulee,
+          panneSimulee: data.panneSimulee,
         },
         timestamp: new Date().toISOString(),
       });

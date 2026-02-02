@@ -10,6 +10,7 @@ interface ConvoyeurData {
   poidsTotal: number; // en kg
   statut: MachineStatus;
   alertes: AlertType[];
+  panneSimulee: boolean;
 }
 
 export class Convoyeur {
@@ -64,6 +65,17 @@ export class Convoyeur {
       this.statut = 'error';
       console.log(`[${this.id}] Panne simulée`);
     });
+
+    // Commande Arrêter simulation - annule les simulations sans changer le statut
+    this.socket.on(`machine:command:${this.id}:reset`, () => {
+      this.panneSimulee = false;
+      // Si la machine était en erreur (panne), on la remet en stopped
+      if (this.statut === 'error') {
+        this.statut = 'stopped';
+        this.vitesse = 0;
+      }
+      console.log(`[${this.id}] Simulation annulée - statut: ${this.statut}`);
+    });
   }
 
   private generateData(): ConvoyeurData {
@@ -102,6 +114,7 @@ export class Convoyeur {
       poidsTotal: Math.round(poidsTotal * 100) / 100,
       statut: this.statut,
       alertes,
+      panneSimulee: this.panneSimulee,
     };
   }
 
@@ -116,6 +129,7 @@ export class Convoyeur {
           vitesse: data.vitesse,
           poidsTotal: data.poidsTotal,
           sens: data.sens === 'forward' ? 1 : -1,
+          panneSimulee: data.panneSimulee,
         },
         timestamp: new Date().toISOString(),
       });

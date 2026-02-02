@@ -14,7 +14,9 @@ export class SimulatorService {
     | Convoyeur
     | PresseHydraulique
     | Imprimante3D
-    | CompresseurFrigorifique;
+    | CompresseurFrigorifique
+    | null = null;
+  private isStarted = false;
 
   constructor() {
     this.socket = io(process.env.BACKEND_URL || '', {
@@ -28,6 +30,14 @@ export class SimulatorService {
   start() {
     this.socket.on('connect', () => {
       console.log(`Connected as ${this.machineId} (type: ${this.machineType})`);
+
+      // Éviter de créer une nouvelle instance si déjà démarrée
+      if (this.isStarted) {
+        console.log(
+          `[${this.machineId}] Reconnexion détectée, instance existante conservée`,
+        );
+        return;
+      }
 
       switch (this.machineType) {
         case 'convoyeur':
@@ -58,6 +68,7 @@ export class SimulatorService {
       }
 
       this.instance.start();
+      this.isStarted = true;
     });
   }
 }

@@ -9,7 +9,7 @@ services:
     environment:
       MACHINE_ID: convoyeur-1
       MACHINE_TYPE: convoyeur
-      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-3000}
+      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-8000}
 
   simulateur_presse:
     build:
@@ -19,7 +19,7 @@ services:
     environment:
       MACHINE_ID: presse-1
       MACHINE_TYPE: presse
-      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-3000}
+      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-8000}
 
   simulateur_imprimante:
     build:
@@ -29,7 +29,7 @@ services:
     environment:
       MACHINE_ID: imprimante-1
       MACHINE_TYPE: imprimante
-      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-3000}
+      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-8000}
 
   simulateur_compresseur:
     build:
@@ -39,4 +39,4 @@ services:
     environment:
       MACHINE_ID: compresseur-1
       MACHINE_TYPE: compresseur
-      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-3000}
+      BACKEND_URL: http://${BACKEND_HOST:-host.docker.internal}:${BACKEND_PORT:-8000}
